@@ -1,0 +1,11 @@
+## Copy this file to android/key.properties (same folder) and fill in your
+## real values. key.properties is gitignored — never commit it or the
+## keystore file itself. See the README's "Release signing" section for how
+## to generate a keystore if you don't have one yet.
+
+storePassword=REPLACE_WITH_YOUR_KEYSTORE_PASSWORD
+keyPassword=REPLACE_WITH_YOUR_KEY_PASSWORD
+keyAlias=REPLACE_WITH_YOUR_KEY_ALIAS
+## Path to the .jks/.keystore file, relative to the android/ folder (or an
+## absolute path). Keeping it outside the repo entirely is safest.
+storeFile=/absolute/path/to/your-release-key.jks

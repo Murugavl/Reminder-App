@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Date/time columns are stored as ISO-8601 text with an explicit
+          # UTC/offset marker instead of unix-timestamp integers. Combined
+          # with normalizing installation/service/due dates to UTC-midnight
+          # before writing (see CustomerRepository._dateOnly), this makes
+          # date-only values round-trip exactly regardless of the device's
+          # timezone at read time — the default integer storage silently
+          # reinterprets the stored instant using whatever timezone is
+          # current *when read*, which can shift a stored date by a day.
+          store_date_time_values_as_text: true
