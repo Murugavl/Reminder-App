@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required by flutter_contacts: native showPicker() with properties reads
+         the selected contact's phone numbers via READ_CONTACTS after the OS
+         picker returns the contact URI. -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <application
         android:label="service_reminder"
         android:name="${applicationName}"
