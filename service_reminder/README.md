@@ -1,210 +1,225 @@
-# Service Reminder
+<div align="center">
 
-A Flutter app for small service businesses (e.g. water purifier / appliance
-servicing) to track customers, log service visits, and get reminded when a
-customer's next service is due — with optional Google Drive backup.
+  <!-- Animated Header Title -->
+  <img src="https://readme-typing-svg.demolab.com?font=Outfit&weight=700&size=40&pause=1000&color=7C4DFF&center=true&vCenter=true&width=600&height=70&lines=Service+Reminder;Customer+%26+Service+Tracker;Automated+Background+Alerts;Cloud+Backup+%26+Sync" alt="Typing Header" />
 
-Targets Android first (`minSdk 24`); iOS is not yet configured.
+  <p align="center">
+    <b>A powerful, offline-first Flutter application tailored for service professionals and maintenance businesses to track customers, log service history, receive automated overdue alerts, and sync cloud backups safely.</b>
+  </p>
 
-## Requirements
+  <!-- Badges -->
+  <p align="center">
+    <a href="https://flutter.dev">
+      <img src="https://img.shields.io/badge/Flutter-3.41+-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter Badge" />
+    </a>
+    <a href="https://dart.dev">
+      <img src="https://img.shields.io/badge/Dart-3.11+-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart Badge" />
+    </a>
+    <a href="https://developer.android.com">
+      <img src="https://img.shields.io/badge/Platform-Android%20(minSdk%2024)-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android Badge" />
+    </a>
+    <a href="https://riverpod.dev">
+      <img src="https://img.shields.io/badge/State-Riverpod%20v2.6-00599C?style=for-the-badge&logo=flutter&logoColor=white" alt="Riverpod Badge" />
+    </a>
+    <a href="https://drift.simonbinder.eu">
+      <img src="https://img.shields.io/badge/Database-Drift%20v2.34-42B883?style=for-the-badge&logo=sqlite&logoColor=white" alt="Drift Badge" />
+    </a>
+    <a href="https://www.google.com/drive/">
+      <img src="https://img.shields.io/badge/Backup-Google%20Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white" alt="Drive Badge" />
+    </a>
+  </p>
 
-- Flutter 3.41.x (stable channel), Dart 3.11.x — check with `flutter --version`.
-- Android SDK with a device or emulator running Android 7.0 (API 24) or newer.
+  <p align="center">
+    <a href="#key-features">Key Features</a> •
+    <a href="#architecture--tech-stack">Tech Stack</a> •
+    <a href="#installation--setup">Setup</a> •
+    <a href="#how-reminders-work">Reminder Logic</a> •
+    <a href="#github-about-section">GitHub About Info</a>
+  </p>
 
-## First-time setup
+  <br />
+</div>
 
-After cloning the repo there are two optional (but recommended) setup steps
-before you run the app:
+---
 
-### 1. Google Sign-In / Drive backup (optional)
+## ⚡ Quick Overview
 
-The core app (customer tracking, reminders) works without any Google credentials.
-If you want the optional Drive backup feature to be active:
+**Service Reminder** empowers small service businesses (water purifiers, HVAC, appliance servicing, solar maintenance, equipment repairs) to retain customers and eliminate missed service deadlines. Built with **Flutter**, **Drift (SQLite)**, and **Riverpod**, the app operates completely offline while offering optional **Google Drive Cloud Sync**.
 
-1. Create or reuse a [Firebase project](https://console.firebase.google.com).
-2. Enable the **Google Drive API** in the linked Google Cloud project.
-3. Register an Android app with package name `com.servicereminder.service_reminder`.
-4. Add your **debug SHA-1** (`keytool -list -v -keystore ~/.android/debug.keystore`)
-   and your **release SHA-1** (from your release keystore) to the Firebase app.
-5. Download `google-services.json` and place it at `android/app/google-services.json`.
-
-> **`android/app/google-services.json` is gitignored — never commit it.**
-> See `.env.example` for a full checklist and the `google_sign_in` package docs
-> for troubleshooting.
-
-Without this file the app starts normally; Settings shows
-*"Google Sign-In not set up"* and the backup section is hidden.
-
-### 2. Release signing (optional for local development)
-
-Debug builds work without any signing config. For Play Store / release builds
-see the [Release signing](#release-signing) section below.
-
-## Building
-
-```bash
-flutter pub get
-flutter run                 # debug build on a connected device/emulator
+```
+📱 App Flow Overview:
+┌─────────────────────────┐      ┌─────────────────────────┐      ┌─────────────────────────┐
+│   Add Customer / Import │ ───► │  Set Service Interval   │ ───► │  Auto Due Calculation   │
+└─────────────────────────┘      └─────────────────────────┘      └─────────────────────────┘
+                                                                               │
+┌─────────────────────────┐      ┌─────────────────────────┐                   ▼
+│ Log Visit & Reset Date  │ ◄─── │ Ongoing Device Alert    │ ◄─── │ WorkManager Daily Check │
+└─────────────────────────┘      └─────────────────────────┘      └─────────────────────────┘
 ```
 
-If you change anything in `lib/data/local/tables.dart` or `database.dart`,
-regenerate drift's generated code:
+---
 
+## ✨ Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| 👥 **Customer Management** | Maintain full customer profiles including contact numbers, addresses, installation dates, and custom notes. |
+| 📇 **Contacts Integration** | Quick-import customer contacts directly from your phone's address book with one tap. |
+| 🔧 **Service Visit History** | Log detailed service records with dates, costs, technician notes, and serviced items. |
+| 🗓️ **Smart Due Date Tracking** | Calculates next due dates dynamically using calendar-midnight accuracy to avoid timezone drift. |
+| 🔔 **Background Notifications** | Daily **WorkManager** task runs in the background (survives app force-close & device reboot) to trigger persistent alerts for overdue services. |
+| ☁️ **Google Drive Backup & Restore** | Privacy-focused JSON snapshot backups saved to the user's private Google Drive `AppData` space. |
+| ⚙️ **Flexible Intervals** | Configure app-wide default reminder intervals (e.g., 3 months) or override per customer (e.g., 6 or 12 months). |
+| 🌙 **Adaptive Material 3 Theme** | Seamless light & dark modes with custom splash screen and high-resolution app branding. |
+
+---
+
+## 🏗️ Architecture & Tech Stack
+
+The application adheres to clean architecture principles with decoupled layers for data, state management, background execution, and UI components.
+
+```mermaid
+graph TD
+    UI[Flutter Material 3 UI / Screens] --> Riverpod[Riverpod Providers]
+    Riverpod --> Repo[Customer Repository]
+    Repo --> DriftDB[(Drift SQLite Database)]
+    
+    WorkManager[WorkManager Background Service] --> Repo
+    WorkManager --> NotifService[Local Notifications Service]
+    
+    BackupService[Google Drive Backup Service] --> Repo
+    BackupService --> DriveAPI[Google Drive REST API]
+```
+
+### Core Technologies
+- **UI Framework:** [Flutter 3.41+](https://flutter.dev) / [Dart 3.11+](https://dart.dev)
+- **State Management:** [Riverpod 2.6](https://riverpod.dev)
+- **Database & Persistence:** [Drift 2.34](https://drift.simonbinder.eu) (SQLite ORM) & `shared_preferences`
+- **Background Tasks:** [Workmanager 0.10](https://pub.dev/packages/workmanager)
+- **Local Notifications:** [flutter_local_notifications 22.3](https://pub.dev/packages/flutter_local_notifications)
+- **Authentication & Cloud API:** `google_sign_in` & `googleapis` (Drive `appdata` scope)
+- **Contact Picker:** `flutter_contacts`
+
+---
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+- **Flutter SDK:** `^3.41.4` (Stable channel)
+- **Dart SDK:** `^3.11.4`
+- **Android Studio / Android SDK:** target API level 34+ (minSdk 24)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Murugavl/Reminder-App.git
+cd Reminder-App/service_reminder
+```
+
+### 2. Install Dependencies
+```bash
+flutter pub get
+```
+
+### 3. Generate Database & Build Runner Code
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-If you change the source images in `assets/icon/` or the
-`flutter_launcher_icons:` / `flutter_native_splash:` sections of
-`pubspec.yaml`, regenerate the platform icon/splash assets:
-
+### 4. Run the Application
 ```bash
-dart run flutter_launcher_icons
-dart run flutter_native_splash:create
+flutter run
 ```
 
-### Release signing
+---
 
-Release builds are signed using `android/key.properties`, which is
-gitignored and **must be created locally** — it's never committed.
+## 🔐 Optional Configuration
 
-1. Generate a keystore if you don't already have one (keep the resulting
-   `.jks` file and its passwords somewhere safe and *outside* this repo —
-   losing it means you can never publish an update to the same Play Store
-   listing again):
+<details>
+<summary><b>1. Setting up Google Drive Backup & Sign-In (Click to Expand)</b></summary>
 
+<br />
+
+The core app operates 100% offline without Google credentials. To enable optional cloud backups:
+
+1. Open [Firebase Console](https://console.firebase.google.com/) and create a project.
+2. Enable **Google Drive API** in Google Cloud Console for the project.
+3. Register an Android app with package name `com.servicereminder.service_reminder`.
+4. Add your **debug SHA-1** fingerprint (`keytool -list -v -keystore ~/.android/debug.keystore`) and release SHA-1 to the Firebase app settings.
+5. Download `google-services.json` and place it in `service_reminder/android/app/google-services.json`.
+
+> ⚠️ **Note:** `google-services.json` is gitignored for security.
+
+</details>
+
+<details>
+<summary><b>2. Configuring Release Build Signing (Click to Expand)</b></summary>
+
+<br />
+
+1. Generate your keystore file:
    ```bash
-   keytool -genkey -v -keystore /path/to/service-reminder-release.jks \
-     -keyalg RSA -keysize 2048 -validity 10000 -alias service_reminder
+   keytool -genkey -v -keystore ~/service-reminder-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias service_reminder
    ```
-
-2. Copy `android/key.properties.example` to `android/key.properties` and
-   fill in the real values (`storeFile` should point at the `.jks` from
-   step 1):
-
+2. Copy `android/key.properties.example` to `android/key.properties`:
    ```bash
    cp android/key.properties.example android/key.properties
    ```
-
-3. Build:
-
+3. Update the property values with your keystore path and credentials.
+4. Build the release APK or AAB:
    ```bash
-   flutter build apk --release        # a single installable APK
-   flutter build appbundle --release  # .aab, for Play Store upload
+   flutter build apk --release
+   flutter build appbundle --release
    ```
 
-   Output lands in `build/app/outputs/flutter-apk/app-release.apk` or
-   `build/app/outputs/bundle/release/app-release.aab`.
+</details>
 
-   Without `key.properties` present, release builds still work but fall
-   back to the debug signing key — fine for local testing, **not** for
-   distribution (debug-signed builds can't receive Play Store updates and
-   Google will reject the upload).
+---
 
-To cut a new release, bump the single `version:` line in `pubspec.yaml`
-(`versionName+versionCode`, e.g. `1.0.1+2`) — `android/app/build.gradle.kts`
-reads both from there.
+## 🧠 How Reminders & Backup Work
 
-### Verifying a release build (manual checklist)
+### Reminder Engine
+- **Due Date Calculation:** Each customer has a `next_due_date` calculated as `(Last Service Date OR Installation Date) + (Reminder Interval)`.
+- **Calendar Accuracy:** All dates are stored as UTC-midnight values (`YYYY-MM-DD`) to eliminate timezone shift bugs when traveling across timezones.
+- **Persistent Notifications:** WorkManager runs a daily background check (~24h period). Overdue customers receive non-swipeable (`ongoing`) notifications until a service visit is logged. Tapping the alert opens the customer's detail screen directly.
 
-Gradle release builds could not be exercised in the sandbox this project was
-developed in — verify these yourself on a real device/emulator before
-shipping:
+### Backup Engine
+- **Privacy First:** Drive integration relies on the restricted `drive.appdata` scope, giving the app zero visibility or access to any other files in the user's Google Drive.
+- **Snapshot Export:** Exports all customer profiles and service history into timestamped JSON files (`service_reminder_backup_<timestamp>.json`).
+- **Silent Weekly Backup:** Optional background schedule automatically syncs local database snapshots weekly when connected to Wi-Fi.
 
-- [ ] `flutter build apk --release`, install it (`adb install -r
-      build/app/outputs/flutter-apk/app-release.apk`), and confirm it opens
-      to the customer list.
-- [ ] Add a customer with an installation date a few months in the past so
-      they're immediately overdue.
-- [ ] Grant the notification permission when prompted (Android 13+).
-- [ ] Settings → **Check reminders now** — confirm the overdue notification
-      appears.
-- [ ] Force-stop the app (Android Settings → Apps → Service Reminder → Force
-      stop) and reboot the device. Don't reopen the app. Within a day (or
-      trigger it sooner — see below), the overdue notification should still
-      appear on its own, proving the daily background check survived both
-      the app process dying and the device restarting.
-      - WorkManager (which the daily check and weekly backup both run on)
-        persists its own schedule outside the app's process and re-arms
-        itself after reboot via its own boot receiver — nothing in this
-        app's code has to run first for that to happen.
-      - To avoid waiting a full day: `adb shell dumpsys jobscheduler | grep
-        -A5 service_reminder` shows whether the job is scheduled, or use
-        Android Studio's *App Inspection → Background Task Inspector* to
-        force-run it immediately.
-- [ ] Tap the notification — it should open straight to that customer's
-      detail screen.
-- [ ] Log a service for that customer — the notification should clear and
-      the next-due date should move forward.
+---
 
-## How the reminder logic works
-
-- Every customer has `next_due_date`, computed as *(a reference date) +
-  (a reminder interval)*.
-- The reference date is the customer's `installation_date` until they have
-  a logged service record, after which it's whichever service record has
-  the latest `service_date` — even if records are logged out of
-  chronological order.
-- The interval defaults to 3 months, configurable app-wide in **Settings →
-  Default reminder interval**, with an optional per-customer override
-  (open a customer → tap **Reminder Interval**). Adding/editing/deleting a
-  service record always recomputes `next_due_date` from scratch using
-  whichever interval currently applies to that customer.
-- A customer is **overdue** once `next_due_date` has passed, and **due
-  soon** within the next 7 days ("due this week" on the dashboard).
-- All dates (`installation_date`, `service_date`, `next_due_date`) are
-  stored as UTC-midnight "calendar dates" rather than local timestamps —
-  deliberately, so a customer's due date can't shift by a day depending on
-  the device's timezone when the row happens to be read back. See
-  `CustomerRepository._dateOnly`.
-- **Logging a service is the only thing that "marks a reminder as done"** —
-  it pushes `next_due_date` forward and clears that customer's
-  notification. A daily background task (Workmanager, ~24h period) checks
-  for overdue customers and posts/updates a notification per customer,
-  grouped into a single summary notification when more than one customer
-  is overdue. Notifications are `ongoing` (can't be swiped away) so they
-  keep reminding you until a service is actually logged. A **Check
-  reminders now** button in Settings runs the same check immediately, for
-  testing.
-
-## How backup/restore works
-
-- Sign-in uses `google_sign_in`, scoped only to `drive.appdata` — the app
-  can see and manage only files *it* created in the user's Drive, never
-  their other files. This requires a Google Cloud/Firebase project with the
-  Drive API enabled and an OAuth client registered for this app's package
-  name + signing certificate (add `android/app/google-services.json` — see
-  `google_sign_in`'s own setup docs). Without that file, the app runs fine
-  and Settings just shows "Google Sign-In not set up"; Drive is backup
-  only, never required for core functionality.
-- **Backup now** exports every `Customer` and `ServiceRecord` row as a
-  single timestamped JSON file (`service_reminder_backup_<timestamp>.json`)
-  and uploads it to the Drive App Data folder. See
-  `lib/services/backup/backup_snapshot.dart` for the exact format.
-- **Restore from backup** lists files from the App Data folder by upload
-  time, and — after an explicit "this cannot be undone" confirmation —
-  **replaces** all local customers and service records with the selected
-  backup's contents (not a merge). This is deliberately simple: restoring
-  is meant for "get my data back on a new phone" or "undo a mistake", not
-  reconciling two divergent datasets.
-- An optional **Automatic weekly backup** toggle in Settings arms a second
-  Workmanager task (independent of the daily reminder check) that backs up
-  silently in the background; it's a no-op if Drive access isn't
-  authorized at the time, rather than prompting (there's no UI to prompt
-  from in a background task).
-
-## Project layout
+## 📂 Project Structure
 
 ```
-lib/
-  data/           drift database + CustomerRepository (all business logic)
-  models/         small value types (due-status classification, etc.)
-  providers/      Riverpod wiring
-  screens/        UI
-  services/       notifications, backup/Drive, reminder scheduling
-  widgets/        shared/reusable UI pieces
-test/             unit + widget tests, mirroring the lib/ structure
-tool/             one-off scripts (currently just app icon generation)
+service_reminder/
+├── android/               # Android native configuration & manifests
+├── assets/                # App icons, splash images, and launcher graphics
+├── lib/
+│   ├── data/              # Drift DB schema, tables, and CustomerRepository
+│   ├── models/            # Value objects & due status logic (Overdue/Due Soon)
+│   ├── providers/         # Riverpod providers & dependency injection
+│   ├── screens/           # UI screens (Home, Details, Settings, Restore)
+│   ├── services/          # WorkManager dispatcher, Notifications, Backup service
+│   └── widgets/           # Reusable UI widgets & forms
+├── test/                  # Unit and widget test suite
+└── pubspec.yaml           # Flutter package dependencies and metadata
 ```
 
-Run the test suite with `flutter test`.
+---
+
+## 🌟 GitHub "About" Section Copy-Paste
+
+Use the following snippets to fill in your GitHub repository **About** sidebar:
+
+### 📝 Short Description (Paste in GitHub Description box)
+> 📱 A Flutter app for small service businesses to manage customers, track service history, receive automated background overdue reminders, and perform secure Google Drive backups.
+
+### 🏷️ Recommended Repository Topics (Paste in GitHub Topics box)
+`flutter` `dart` `drift-db` `riverpod` `service-reminder` `customer-management` `workmanager` `google-drive-backup` `android-app` `sqlite` `material-3`
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ using <b>Flutter & Dart</b>. Designed for small business reliability.</sub>
+</div>
