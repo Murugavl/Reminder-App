@@ -205,21 +205,6 @@ service_reminder/
 ├── test/                  # Unit and widget test suite
 └── pubspec.yaml           # Flutter package dependencies and metadata
 ```
-
----
-
-## 🌟 GitHub "About" Section Copy-Paste
-
-Use the following snippets to fill in your GitHub repository **About** sidebar:
-
-### 📝 Short Description (Paste in GitHub Description box)
-> 📱 A Flutter app for small service businesses to manage customers, track service history, receive automated background overdue reminders, and perform secure Google Drive backups.
-
-### 🏷️ Recommended Repository Topics (Paste in GitHub Topics box)
-`flutter` `dart` `drift-db` `riverpod` `service-reminder` `customer-management` `workmanager` `google-drive-backup` `android-app` `sqlite` `material-3`
-
----
-
 <div align="center">
-  <sub>Built with ❤️ using <b>Flutter & Dart</b>. Designed for small business reliability.</sub>
+  <sub> Designed for small business reliability.</sub>
 </div>
