@@ -89,4 +89,35 @@ void main() {
     expect(customers.first.name, 'Test Customer');
     expect(customers.first.phone, '9998887777');
   });
+
+  testWidgets('duplicate customer details are rejected with a visible message', (tester) async {
+    await CustomerRepository(db).addCustomer(
+      name: 'Test Customer',
+      phone: '9998887777',
+      address: '1 Main St',
+      installationDate: DateTime(2026, 1, 1),
+    );
+    await pumpAddScreenPushedFromHome(tester);
+
+    await tester.enterText(find.widgetWithText(TextFormField, 'Customer Name'), 'Test Customer');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Phone Number'), '9998887777');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Address'), '1 Main St');
+
+    await tester.tap(find.text('Date of Installation'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Could not save customer: A customer with the same name, phone number, and address already exists.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(AddCustomerScreen), findsOneWidget);
+    expect(await CustomerRepository(db).getAllCustomers(), hasLength(1));
+  });
 }

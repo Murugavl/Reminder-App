@@ -27,6 +27,46 @@ void main() {
     expect(customer.nextDueDate, DateTime.utc(2026, 4, 15));
   });
 
+  group('duplicate customers', () {
+    test('rejects a customer with the same name, phone, and address', () async {
+      await repo.addCustomer(
+        name: 'Alice',
+        phone: '12345',
+        address: '1 Main St',
+        installationDate: DateTime(2026, 1, 15),
+      );
+
+      await expectLater(
+        () => repo.addCustomer(
+          name: 'Alice',
+          phone: '12345',
+          address: '1 Main St',
+          installationDate: DateTime(2026, 2, 15),
+        ),
+        throwsA(isA<DuplicateCustomerException>()),
+      );
+      expect(await repo.getAllCustomers(), hasLength(1));
+    });
+
+    test('allows matching names when phone or address differs', () async {
+      await repo.addCustomer(
+        name: 'Alice',
+        phone: '12345',
+        address: '1 Main St',
+        installationDate: DateTime(2026, 1, 15),
+      );
+
+      await repo.addCustomer(
+        name: 'Alice',
+        phone: '54321',
+        address: '1 Main St',
+        installationDate: DateTime(2026, 1, 15),
+      );
+
+      expect(await repo.getAllCustomers(), hasLength(2));
+    });
+  });
+
   group('date storage is timezone-safe', () {
     test('installation_date, next_due_date, and service_date all come back UTC-tagged', () async {
       final customer = await repo.addCustomer(

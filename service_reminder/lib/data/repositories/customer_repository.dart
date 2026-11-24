@@ -9,6 +9,11 @@ import '../local/database.dart';
 const defaultReminderIntervalMonths = 3;
 const _uuid = Uuid();
 
+class DuplicateCustomerException implements Exception {
+  @override
+  String toString() => 'A customer with the same name, phone number, and address already exists.';
+}
+
 class CustomerRepository {
   CustomerRepository(this._db);
 
@@ -45,23 +50,31 @@ class CustomerRepository {
     int globalDefaultIntervalMonths = defaultReminderIntervalMonths,
     int? reminderIntervalMonths,
   }) {
-    final now = _now();
-    final installation = _dateOnly(installationDate);
-    final effectiveMonths = reminderIntervalMonths ?? globalDefaultIntervalMonths;
+    return _db.transaction(() async {
+      final duplicate = await (_db.select(_db.customers)
+            ..where((customer) =>
+                customer.name.equals(name) & customer.phone.equals(phone) & customer.address.equals(address)))
+          .getSingleOrNull();
+      if (duplicate != null) throw DuplicateCustomerException();
 
-    return _db.into(_db.customers).insertReturning(
-          CustomersCompanion.insert(
-            id: _uuid.v4(),
-            name: name,
-            phone: phone,
-            address: address,
-            installationDate: installation,
-            nextDueDate: _addMonths(installation, effectiveMonths),
-            createdAt: now,
-            updatedAt: now,
-            reminderIntervalMonths: Value(reminderIntervalMonths),
-          ),
-        );
+      final now = _now();
+      final installation = _dateOnly(installationDate);
+      final effectiveMonths = reminderIntervalMonths ?? globalDefaultIntervalMonths;
+
+      return _db.into(_db.customers).insertReturning(
+            CustomersCompanion.insert(
+              id: _uuid.v4(),
+              name: name,
+              phone: phone,
+              address: address,
+              installationDate: installation,
+              nextDueDate: _addMonths(installation, effectiveMonths),
+              createdAt: now,
+              updatedAt: now,
+              reminderIntervalMonths: Value(reminderIntervalMonths),
+            ),
+          );
+    });
   }
 
   Future<Customer> updateCustomer({
