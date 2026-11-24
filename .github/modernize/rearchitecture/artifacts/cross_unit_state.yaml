@@ -1,0 +1,30 @@
+flows:
+  - name: notification payload to customer detail
+    medium: framework-context
+    key: "notification payload = customerId"
+    writer:
+      unit: overdue-reminder-job
+      source_loc: "service_reminder/lib/services/notifications/local_notification_service.dart:100"
+    reader:
+      unit: customer-detail
+      source_loc: "service_reminder/lib/main.dart:59"
+    pairing: matched
+    must_preserve: true
+    must_confirm: null
+    verification_hint: "Tap an overdue notification during cold start and foreground states; verify the matching customer route opens."
+    notes: "The payload can reach navigatorKey in main.dart after app launch."
+
+  - name: provider invalidation after customer mutations
+    medium: framework-context
+    key: "customersListProvider and customerDetailProvider"
+    writer:
+      unit: customer-detail
+      source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:28"
+    reader:
+      unit: home
+      source_loc: "service_reminder/lib/screens/home_screen.dart:27"
+    pairing: matched
+    must_preserve: true
+    must_confirm: null
+    verification_hint: "Log/edit/delete a customer and verify Home and Customer Detail refresh without stale data."
+    notes: "Provider invalidation is the shared UI state mechanism."

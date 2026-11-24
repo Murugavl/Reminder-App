@@ -1,0 +1,7 @@
+unit: overdue-reminder-job
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart:13"
+    drivers: [execution_model_split, concern_split]
+    rationale: "Due-customer selection and platform notification rendering mix domain queries with platform side effects."
+    source_slice: {file: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart", lines: [13, 25]}

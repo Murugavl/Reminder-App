@@ -1,0 +1,149 @@
+units:
+  - name: home
+    trigger: page
+    trigger_detail: "MaterialPageRoute from app launcher; HomeScreen is MaterialApp.home"
+    source_anchors:
+      - path: service_reminder/lib/screens/home_screen.dart
+        line: 13
+    exported_signature:
+      - method: "Widget HomeScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/home_screen.dart:13"
+        stability: frozen
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: customer-detail
+        via: "CustomerDetailScreen(customerId)"
+      - unit: add-customer
+        via: "AddCustomerScreen"
+      - unit: settings
+        via: "SettingsScreen"
+    shared_refs:
+      - module: customer-repository
+        used_fields: [getAllCustomers]
+
+  - name: add-customer
+    trigger: page
+    trigger_detail: "Add Customer navigation from HomeScreen"
+    source_anchors:
+      - path: service_reminder/lib/screens/add_customer_screen.dart
+        line: 9
+    exported_signature:
+      - method: "Widget AddCustomerScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/add_customer_screen.dart:9"
+        stability: must_preserve
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: customer-repository
+        used_fields: [addCustomer]
+
+  - name: customer-detail
+    trigger: page
+    trigger_detail: "CustomerDetailScreen(customerId), reached from home or notification payload"
+    source_anchors:
+      - path: service_reminder/lib/screens/customer_detail_screen.dart
+        line: 16
+    exported_signature:
+      - method: "Widget CustomerDetailScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:16"
+        stability: frozen
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: edit-customer
+        via: "EditCustomerScreen(customer)"
+    shared_refs:
+      - module: customer-repository
+        used_fields: [getCustomerWithHistory, addServiceRecord, updateServiceRecord, deleteServiceRecord, setReminderIntervalOverride, deleteCustomer]
+
+  - name: edit-customer
+    trigger: page
+    trigger_detail: "Edit Customer popup route from CustomerDetailScreen"
+    source_anchors:
+      - path: service_reminder/lib/screens/edit_customer_screen.dart
+        line: 11
+    exported_signature:
+      - method: "Widget EditCustomerScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/edit_customer_screen.dart:11"
+        stability: must_preserve
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: customer-repository
+        used_fields: [updateCustomer]
+
+  - name: settings
+    trigger: page
+    trigger_detail: "Settings action from HomeScreen app bar"
+    source_anchors:
+      - path: service_reminder/lib/screens/settings_screen.dart
+        line: 15
+    exported_signature:
+      - method: "Widget SettingsScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/settings_screen.dart:15"
+        stability: must_preserve
+    dynamic_entrypoints: []
+    depends_on:
+      - unit: restore-backup
+        via: "RestoreBackupScreen"
+    shared_refs:
+      - module: customer-repository
+        used_fields: [getOverdueCustomers]
+      - module: backup-service
+        used_fields: [initialize, signIn, signOut, backupNow, listBackups, restore]
+
+  - name: restore-backup
+    trigger: page
+    trigger_detail: "Restore from backup navigation in Settings"
+    source_anchors:
+      - path: service_reminder/lib/screens/restore_backup_screen.dart
+        line: 9
+    exported_signature:
+      - method: "Widget RestoreBackupScreen.build(BuildContext, WidgetRef)"
+        source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:9"
+        stability: must_preserve
+    dynamic_entrypoints: []
+    depends_on: []
+    shared_refs:
+      - module: backup-service
+        used_fields: [listBackups, restore]
+
+  - name: overdue-reminder-job
+    trigger: job
+    trigger_detail: "Workmanager task overdueReminderCheck, 24-hour periodic frequency"
+    source_anchors:
+      - path: service_reminder/lib/services/reminders/reminder_background_task.dart
+        line: 22
+      - path: service_reminder/lib/services/workmanager_callback_dispatcher.dart
+        line: 12
+    exported_signature:
+      - method: "Future<void> runOverdueReminderCheckInBackground()"
+        source_loc: "service_reminder/lib/services/reminders/reminder_background_task.dart:22"
+        stability: frozen
+    dynamic_entrypoints:
+      - target: "callbackDispatcher"
+        mechanism: convention
+        source_loc: "service_reminder/lib/services/workmanager_callback_dispatcher.dart:12"
+    depends_on: []
+    shared_refs:
+      - module: customer-repository
+        used_fields: [getOverdueCustomers, getCustomerWithHistory]
+
+  - name: weekly-backup-job
+    trigger: job
+    trigger_detail: "Workmanager task weeklyBackupCheck, 7-day periodic frequency"
+    source_anchors:
+      - path: service_reminder/lib/services/backup/backup_background_task.dart
+        line: 20
+    exported_signature:
+      - method: "Future<void> runWeeklyBackupInBackground()"
+        source_loc: "service_reminder/lib/services/backup/backup_background_task.dart:20"
+        stability: frozen
+    dynamic_entrypoints:
+      - target: "callbackDispatcher"
+        mechanism: convention
+        source_loc: "service_reminder/lib/services/workmanager_callback_dispatcher.dart:12"
+    depends_on: []
+    shared_refs:
+      - module: backup-service
+        used_fields: [initialize, backupNow]
+

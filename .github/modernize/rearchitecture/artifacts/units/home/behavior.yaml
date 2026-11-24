@@ -1,0 +1,27 @@
+unit: home
+side_effects:
+  - source_loc: "service_reminder/lib/screens/home_screen.dart:35"
+    effect: "Invalidates/refetches the customer list on pull-to-refresh."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/screens/home_screen.dart:49"
+    condition: "Customer list is loading, errored, empty, or filtered to no matches."
+    behavior: "Render corresponding spinner, error text, empty state, or no-search-result state."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/home_screen.dart:81"
+    condition: "Due status is overdue, due-soon, or on-track."
+    behavior: "Update dashboard and customer row status counts/badges."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/screens/home_screen.dart:62"
+    trigger: "Customer list provider fails."
+    outcome: "Display Could not load customers with the error."
+    contract: "Visible inline error text."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:19"
+    scope: "Read-only list query; no transaction."
+    isolation: "database default"
+    must_preserve: false

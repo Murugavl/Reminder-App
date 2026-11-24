@@ -1,0 +1,7 @@
+unit: customer-detail
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/screens/customer_detail_screen.dart:62"
+    drivers: [concern_split]
+    rationale: "Customer profile actions and service-history actions are separate concern families in one page."
+    source_slice: {file: "service_reminder/lib/screens/customer_detail_screen.dart", lines: [62, 228]}

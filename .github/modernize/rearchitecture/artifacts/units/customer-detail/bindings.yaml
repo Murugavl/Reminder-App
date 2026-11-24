@@ -1,0 +1,15 @@
+unit: customer-detail
+bindings:
+  - type: route-declaration
+    name: "Navigator push from home or notification"
+    source_loc: "service_reminder/lib/main.dart:59"
+    target: "CustomerDetailScreen(customerId)"
+    must_appear_in_target: true
+    notes: "Customer id is passed by route parameter or notification payload."
+runtime_config:
+  - key: "defaultReminderIntervalMonths"
+    source_loc: "service_reminder/lib/providers/settings_providers.dart:14"
+    source: properties-file
+    default_value: "3"
+    must_appear_in_target: true
+    notes: "Used when recomputing due dates and no customer override exists."

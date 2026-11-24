@@ -1,0 +1,9 @@
+unit: restore-backup
+bindings:
+  - type: route-declaration
+    name: "RestoreBackupScreen route"
+    source_loc: "service_reminder/lib/screens/settings_screen.dart:214"
+    target: "RestoreBackupScreen"
+    must_appear_in_target: true
+    notes: "Enabled only when an account is signed in."
+runtime_config: []

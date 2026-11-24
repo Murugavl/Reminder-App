@@ -1,0 +1,47 @@
+unit: settings
+side_effects:
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:26"
+    effect: "Persists the global reminder interval."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:31"
+    effect: "Persists notification sound/vibration preference."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:36"
+    effect: "Persists theme mode."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:75"
+    effect: "Signs in/out or uploads/restores Google Drive backups."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:61"
+    effect: "Enables or disables automatic weekly backup scheduling."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:115"
+    effect: "Runs overdue reminder check immediately."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:151"
+    condition: "Google OAuth is not configured, signed out, or signed in."
+    behavior: "Disable backup UI, show sign-in action, or show account/sign-out controls."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:61"
+    condition: "Automatic backup enable succeeds or fails."
+    behavior: "Turn on schedule/preferences only after sign-in and initial backup succeed."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:45"
+    trigger: "Sign-in failure."
+    outcome: "Show Sign-in failed SnackBar."
+    contract: "Visible error text."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/settings_screen.dart:99"
+    trigger: "Backup enable or reminder check fails."
+    outcome: "Show a visible failure SnackBar and leave controls usable."
+    contract: "Visible error text."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/services/backup/google_drive_backup_service.dart:95"
+    scope: "Remote backup operations are not local transactions."
+    isolation: "not applicable"
+    must_preserve: false

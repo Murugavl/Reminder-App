@@ -1,0 +1,9 @@
+unit: home
+bindings:
+  - type: route-declaration
+    name: "MaterialApp.home"
+    source_loc: "service_reminder/lib/main.dart:87"
+    target: "HomeScreen"
+    must_appear_in_target: true
+    notes: "Home is the app launch route."
+runtime_config: []

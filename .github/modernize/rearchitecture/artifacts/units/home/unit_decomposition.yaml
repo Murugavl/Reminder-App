@@ -1,0 +1,7 @@
+unit: home
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/screens/home_screen.dart:79"
+    drivers: [concern_split]
+    rationale: "Dashboard summary, search state, and customer list rendering are currently combined in one page implementation."
+    source_slice: {file: "service_reminder/lib/screens/home_screen.dart", lines: [79, 112]}

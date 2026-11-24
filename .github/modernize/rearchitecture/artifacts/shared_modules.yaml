@@ -1,0 +1,53 @@
+modules:
+  - name: customer-repository
+    kind: store
+    source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:12"
+    used_by_units: [home, add-customer, customer-detail, edit-customer, settings, overdue-reminder-job]
+    fields:
+      - name: getAllCustomers
+        type: "Future<List<Customer>>"
+      - name: getOverdueCustomers
+        type: "Future<List<Customer>>"
+      - name: addCustomer
+        type: "Future<Customer>"
+      - name: updateCustomer
+        type: "Future<Customer>"
+      - name: addServiceRecord
+        type: "Future<ServiceRecord>"
+      - name: updateServiceRecord
+        type: "Future<ServiceRecord>"
+      - name: deleteServiceRecord
+        type: "Future<void>"
+      - name: deleteCustomer
+        type: "Future<void>"
+      - name: setReminderIntervalOverride
+        type: "Future<Customer>"
+      - name: getCustomerWithHistory
+        type: "Future<CustomerWithHistory>"
+    god_class: true
+    split_candidate: true
+    migration_strategy: split
+    notes: "Combines customer CRUD, service-history CRUD, due-date computation, and transaction orchestration."
+
+  - name: backup-service
+    kind: utility
+    source_loc: "service_reminder/lib/services/backup/backup_service.dart:1"
+    used_by_units: [settings, restore-backup, weekly-backup-job]
+    fields:
+      - name: initialize
+        type: "Future<void>"
+      - name: signIn
+        type: "Future<void>"
+      - name: signOut
+        type: "Future<void>"
+      - name: backupNow
+        type: "Future<BackupOutcome>"
+      - name: listBackups
+        type: "Future<List<DriveBackupFile>>"
+      - name: restore
+        type: "Future<void>"
+    god_class: false
+    split_candidate: false
+    migration_strategy: wrap
+    notes: "Platform-integration abstraction shared by foreground and background backup paths."
+

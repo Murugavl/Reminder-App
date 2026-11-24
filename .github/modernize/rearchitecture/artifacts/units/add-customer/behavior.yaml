@@ -1,0 +1,26 @@
+unit: add-customer
+side_effects:
+  - source_loc: "service_reminder/lib/screens/add_customer_screen.dart:20"
+    effect: "Creates a Customer and recomputes its initial next due date."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/add_customer_screen.dart:27"
+    effect: "Invalidates the customers list and closes the page."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/widgets/customer_form.dart:44"
+    condition: "Name, phone, address, or installation date validation fails."
+    behavior: "Keep the form open and show inline validation feedback."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/widgets/customer_form.dart:44"
+    trigger: "Invalid form or repository insert failure."
+    outcome: "Display the form error/submit failure without closing the page."
+    contract: "Visible form feedback."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:40"
+    scope: "Single insertReturning operation."
+    isolation: "database default"
+    must_preserve: false

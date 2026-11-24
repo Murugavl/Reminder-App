@@ -1,0 +1,42 @@
+unit: customer-detail
+side_effects:
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:62"
+    effect: "Adds a service record and recomputes next_due_date."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:70"
+    effect: "Cancels the customer's overdue notification after logging a service."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:90"
+    effect: "Updates a service record and recomputes due date."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:122"
+    effect: "Deletes a service record and recomputes due date."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:181"
+    effect: "Sets or clears a per-customer reminder interval override."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:202"
+    effect: "Permanently deletes the customer and all service history after confirmation."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:250"
+    condition: "No service records exist."
+    behavior: "Show No service records yet."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:280"
+    condition: "Next due date is overdue, due-soon, or on-track."
+    behavior: "Show matching banner color, icon, and label."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:78"
+    trigger: "Log/update/delete/interval/delete-customer operation fails."
+    outcome: "Show an inline SnackBar error and retain the detail page."
+    contract: "Visible localized error text."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:89"
+    scope: "Service insert plus due-date recomputation are atomic."
+    isolation: "database default"
+    must_preserve: true

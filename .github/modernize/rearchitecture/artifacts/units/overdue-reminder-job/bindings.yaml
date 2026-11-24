@@ -1,0 +1,21 @@
+unit: overdue-reminder-job
+bindings:
+  - type: convention
+    name: "@pragma('vm:entry-point') callbackDispatcher"
+    source_loc: "service_reminder/lib/services/workmanager_callback_dispatcher.dart:10"
+    target: "Workmanager callback dispatcher"
+    must_appear_in_target: true
+    notes: "Top-level entry point must remain discoverable across isolates."
+  - type: di-registration
+    name: "overdueReminderCheck periodic task"
+    source_loc: "service_reminder/lib/main.dart:24"
+    target: "overdueReminderTaskName"
+    must_appear_in_target: true
+    notes: "24-hour periodic registration with keep-existing-work policy."
+runtime_config:
+  - key: "notification sound and vibration"
+    source_loc: "service_reminder/lib/services/notifications/notification_preferences.dart:8"
+    source: properties-file
+    default_value: "true"
+    must_appear_in_target: true
+    notes: "Read from SharedPreferences in foreground and background isolates."

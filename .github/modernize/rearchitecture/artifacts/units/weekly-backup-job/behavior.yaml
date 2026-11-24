@@ -1,0 +1,27 @@
+unit: weekly-backup-job
+side_effects:
+  - source_loc: "service_reminder/lib/services/backup/backup_background_task.dart:20"
+    effect: "Initializes Google auth and uploads a JSON database snapshot to Drive appDataFolder."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/services/backup/backup_background_task.dart:26"
+    condition: "No current account."
+    behavior: "Skip the upload."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/services/backup/google_drive_backup_service.dart:95"
+    condition: "Interactive auth is false."
+    behavior: "Fail softly instead of prompting in a background isolate."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/services/backup/backup_background_task.dart:33"
+    trigger: "Database or Drive operation fails."
+    outcome: "Finally closes the database; backup outcome remains a soft failure."
+    contract: "No foreground exception propagation."
+    must_preserve: true
+concurrency:
+  model: thread-pool
+  tx_boundary:
+    source_loc: "service_reminder/lib/services/backup/google_drive_backup_service.dart:84"
+    scope: "Local reads and remote upload are not a distributed transaction."
+    isolation: "database default"
+    must_preserve: false

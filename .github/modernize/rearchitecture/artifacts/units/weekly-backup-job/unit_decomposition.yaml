@@ -1,0 +1,7 @@
+unit: weekly-backup-job
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/services/backup/backup_background_task.dart:20"
+    drivers: [execution_model_split, concern_split]
+    rationale: "Background isolate setup, authentication, snapshot export, and upload are coupled in a thin task runner."
+    source_slice: {file: "service_reminder/lib/services/backup/backup_background_task.dart", lines: [20, 31]}

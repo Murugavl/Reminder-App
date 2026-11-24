@@ -1,0 +1,41 @@
+contracts:
+  - name: local-database
+    unit: global
+    type: sql
+    stability: frozen
+    source_loc: "service_reminder/lib/data/local/database.dart:13"
+    contract:
+      method: "SQLite through Drift"
+      path: "service_reminder.sqlite"
+      request: "Customers and ServiceRecords"
+      response: "Drift Customer and ServiceRecord types"
+      error: "Drift/database exceptions"
+      auth: "device-local"
+    target_contract:
+      method: "Preserve the SQLite schema, foreign-key relationship, and UTC date serialization"
+      notes: "No external API wire format; schema and generated row shapes are the contract."
+    semantic_divergence:
+      - field: DateTime columns
+        issue: "Date-only values use UTC midnight while created/updated values use real UTC instants."
+        source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:251"
+
+  - name: google-drive-appdata-backup
+    unit: settings
+    type: sdk
+    stability: must_preserve
+    source_loc: "service_reminder/lib/services/backup/google_drive_backup_service.dart:11"
+    contract:
+      method: "Google Drive v3 files.create/list/get"
+      path: "appDataFolder"
+      request: "JSON BackupSnapshot"
+      response: "Drive file metadata and media stream"
+      error: "BackupFailed(message)"
+      auth: "Google OAuth drive.appdata scope"
+    target_contract:
+      method: "Create, list, and download appDataFolder JSON snapshots"
+      notes: "Preserve snapshot version 1 and the existing JSON field/value shapes."
+    semantic_divergence:
+      - field: exportedAt and DateTime fields
+        issue: "JSON serializers must retain ISO-8601 text with UTC semantics."
+        source_loc: "service_reminder/lib/services/backup/backup_snapshot.dart:16"
+

@@ -1,0 +1,7 @@
+unit: settings
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/screens/settings_screen.dart:15"
+    drivers: [concern_split]
+    rationale: "Reminder preferences, appearance, backup, and debug controls are four distinct settings concern groups."
+    source_slice: {file: "service_reminder/lib/screens/settings_screen.dart", lines: [15, 295]}

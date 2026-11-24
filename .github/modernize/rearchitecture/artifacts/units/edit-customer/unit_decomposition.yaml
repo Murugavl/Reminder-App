@@ -1,0 +1,7 @@
+unit: edit-customer
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/screens/edit_customer_screen.dart:11"
+    drivers: [reuse_split]
+    rationale: "Edit customer is a route wrapper around the shared CustomerForm and may remain a thin unit."
+    source_slice: {file: "service_reminder/lib/screens/edit_customer_screen.dart", lines: [11, 38]}

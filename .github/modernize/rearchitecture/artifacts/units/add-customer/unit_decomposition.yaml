@@ -1,0 +1,7 @@
+unit: add-customer
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/widgets/customer_form.dart:44"
+    drivers: [concern_split]
+    rationale: "Form validation and contact import presentation are reusable concerns separate from customer insertion."
+    source_slice: {file: "service_reminder/lib/widgets/customer_form.dart", lines: [44, 377]}

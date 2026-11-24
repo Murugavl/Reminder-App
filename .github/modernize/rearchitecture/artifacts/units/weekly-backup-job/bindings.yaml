@@ -1,0 +1,15 @@
+unit: weekly-backup-job
+bindings:
+  - type: convention
+    name: "weeklyBackupCheck Workmanager task"
+    source_loc: "service_reminder/lib/services/backup/backup_background_task.dart:9"
+    target: "callbackDispatcher"
+    must_appear_in_target: true
+    notes: "Seven-day periodic registration."
+runtime_config:
+  - key: "isAutoBackupEnabled"
+    source_loc: "service_reminder/lib/services/backup/backup_preferences.dart:8"
+    source: properties-file
+    default_value: "false"
+    must_appear_in_target: true
+    notes: "Controls startup re-registration and Settings switch state."

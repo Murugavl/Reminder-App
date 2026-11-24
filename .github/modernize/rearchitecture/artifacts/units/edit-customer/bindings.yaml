@@ -1,0 +1,9 @@
+unit: edit-customer
+bindings:
+  - type: route-declaration
+    name: "Popup menu Edit route"
+    source_loc: "service_reminder/lib/screens/customer_detail_screen.dart:232"
+    target: "EditCustomerScreen(customer)"
+    must_appear_in_target: true
+    notes: "Receives the existing Customer model as route state."
+runtime_config: []

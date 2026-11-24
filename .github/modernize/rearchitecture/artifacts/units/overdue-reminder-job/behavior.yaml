@@ -1,0 +1,30 @@
+unit: overdue-reminder-job
+side_effects:
+  - source_loc: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart:13"
+    effect: "Queries due customers and creates/upserts/cancels platform notifications."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/services/notifications/local_notification_service.dart:54"
+    effect: "Creates one ongoing notification per overdue customer and a summary for multiple customers."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart:13"
+    condition: "No overdue customers."
+    behavior: "Clear/refresh notifications to an empty set."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart:23"
+    condition: "No service history exists."
+    behavior: "Use installationDate as last service date."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/services/reminders/reminder_background_task.dart:41"
+    trigger: "Database/plugin initialization or notification operation fails."
+    outcome: "Finally closes the fresh database and lets Workmanager report task completion/failure."
+    contract: "No user-visible foreground error; task isolation."
+    must_preserve: false
+concurrency:
+  model: thread-pool
+  tx_boundary:
+    source_loc: "service_reminder/lib/services/reminders/overdue_reminder_checker.dart:13"
+    scope: "Read-only database queries followed by notification side effects."
+    isolation: "database default"
+    must_preserve: false

@@ -1,0 +1,7 @@
+unit: restore-backup
+commit: false
+candidate_splits:
+  - id: "service_reminder/lib/screens/restore_backup_screen.dart:19"
+    drivers: [concern_split]
+    rationale: "Backup discovery and destructive restore confirmation are separate UI concerns but share this page."
+    source_slice: {file: "service_reminder/lib/screens/restore_backup_screen.dart", lines: [19, 121]}

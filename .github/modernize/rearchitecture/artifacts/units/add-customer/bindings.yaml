@@ -1,0 +1,15 @@
+unit: add-customer
+bindings:
+  - type: route-declaration
+    name: "Navigator push"
+    source_loc: "service_reminder/lib/screens/home_screen.dart:110"
+    target: "AddCustomerScreen"
+    must_appear_in_target: true
+    notes: "Reachable from HomeScreen empty state and floating action button."
+runtime_config:
+  - key: "defaultReminderIntervalMonths"
+    source_loc: "service_reminder/lib/providers/settings_providers.dart:14"
+    source: properties-file
+    default_value: "3"
+    must_appear_in_target: true
+    notes: "Stored through SharedPreferences and used for initial next due date."

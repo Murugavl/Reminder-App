@@ -1,0 +1,26 @@
+unit: edit-customer
+side_effects:
+  - source_loc: "service_reminder/lib/screens/edit_customer_screen.dart:23"
+    effect: "Updates customer name, phone, address, and installation date."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/edit_customer_screen.dart:30"
+    effect: "Invalidates list/detail providers and closes the page."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/widgets/customer_form.dart:44"
+    condition: "Validation fails."
+    behavior: "Keep the edit form open with validation feedback."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/widgets/customer_form.dart:44"
+    trigger: "Invalid form or update failure."
+    outcome: "Keep the page open and expose feedback."
+    contract: "Visible form feedback."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/data/repositories/customer_repository.dart:67"
+    scope: "Single customer update."
+    isolation: "database default"
+    must_preserve: false

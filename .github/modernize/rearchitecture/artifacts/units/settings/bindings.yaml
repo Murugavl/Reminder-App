@@ -1,0 +1,21 @@
+unit: settings
+bindings:
+  - type: route-declaration
+    name: "SettingsScreen route"
+    source_loc: "service_reminder/lib/screens/home_screen.dart:36"
+    target: "SettingsScreen"
+    must_appear_in_target: true
+    notes: "Reached from Home app-bar settings action."
+  - type: di-registration
+    name: "Riverpod backup and preference providers"
+    source_loc: "service_reminder/lib/providers/backup_providers.dart:9"
+    target: "BackupService and Workmanager scheduler"
+    must_appear_in_target: true
+    notes: "Keep providers or equivalent dependency wiring."
+runtime_config:
+  - key: "google_sign_in initialization"
+    source_loc: "service_reminder/lib/services/backup/google_drive_backup_service.dart:32"
+    source: properties-file
+    default_value: "android/app/google-services.json"
+    must_appear_in_target: true
+    notes: "Build is unconfigured when OAuth client configuration is absent."

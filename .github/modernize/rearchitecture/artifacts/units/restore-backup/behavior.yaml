@@ -1,0 +1,30 @@
+unit: restore-backup
+side_effects:
+  - source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:19"
+    effect: "Lists up to 50 app-data backup files."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:43"
+    effect: "Destructively replaces all local customers and service records after confirmation."
+    must_preserve: true
+branches:
+  - source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:64"
+    condition: "Backup list is loading, errored, empty, or selectable."
+    behavior: "Render spinner, error, empty state, or backup list."
+    must_preserve: true
+  - source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:22"
+    condition: "User confirms or cancels restore."
+    behavior: "Cancel leaves data unchanged; confirm performs replacement."
+    must_preserve: true
+error_paths:
+  - source_loc: "service_reminder/lib/screens/restore_backup_screen.dart:55"
+    trigger: "Download/decode/restore fails."
+    outcome: "Show Restore failed SnackBar and keep the page open."
+    contract: "Visible error text."
+    must_preserve: true
+concurrency:
+  model: event-loop
+  tx_boundary:
+    source_loc: "service_reminder/lib/services/backup/backup_snapshot.dart:101"
+    scope: "Delete and insert all backup entities in one database transaction."
+    isolation: "database default"
+    must_preserve: true
